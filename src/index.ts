@@ -215,7 +215,24 @@ app.post("libros/:id/devolver", (req, res) => {  //Devolver libro
     res.status(400).json({ message: `El libro con ID ${id} no está prestado actualmente` });
     return
   }
+  libroBuscado.disponible = true; //actualizamos disponibilidad del libro
+
+  res.json({
+    message: `El libro con ID ${id} ha sido devuelto`
+  });
+});
+
+app.get("/estadisticas", (req, res) => {  //Estadisticas
+  const totalLibros = libros.length;
+  const librosDisponibles = libros.filter((x) => x.disponible).length;
+  const librosPrestados = totalLibros - librosDisponibles;
   
+  res.json({
+    message:`ESTADISTICAS DEL NEGOCIO:
+    Total de libros: ${totalLibros}
+    Libros disponibles: ${librosDisponibles}
+    Libros prestados: ${librosPrestados}`
+  });
 });
 
 const PORT = 3000
