@@ -79,6 +79,60 @@ app.put("/libros/:id", (req, res) => { //Actualiza un libro por ID
   });
 });
 
+app.patch("/libros/:id", (req, res) => { //Actualiza parcialmente un libro por ID
+  const id = Number(req.params.id);
+  if(!req.body){
+    res.status(400).json({ message: "Esto es un patch update endpoint, necesitas mandra un body" });
+    return //terminamos proceso si no hay body
+  }
+
+  if(!req.body.titulo || !req.body.autor || !req.body.año ||req.body.disponible === undefined){
+    res.status(400).json({
+      message: "No hay valores para actualizar"
+    });
+    return;
+  }
+
+  const libroAActualizar = libros.find((libro) => libro.id === id);
+  if (!libroAActualizar) {
+    res.status(404).json({ message: `No se ha podido encontrar el libro con ID ${id} en nuestra base de datos`});
+    return //terminamos proceso si no hay libro
+  }
+
+  const libroActualizado = {
+    ...libroAActualizar,
+    titulo: req?.body?.titulo ? req.body.titulo : libroAActualizar.titulo,
+    autor: req?.body?.autor ? req.body.autor : libroAActualizar.autor,
+    año: req?.body?.año ? req.body.año : libroAActualizar.año,
+    disponible: req?.body?.disponible !== undefined ? req.body.disponible : libroAActualizar.disponible
+  };
+  
+  libros = libros.map((x)=>x.id===id?libroActualizado:x);
+
+  res.json({
+    message: `El libro con ID ${id} ha sido actualizado parcialmente`
+  })
+});
+
+app.delete("/libros/:id", (req, res) => { //Elimina un libro por ID
+  const id = Number(req.params.id);
+  const libroBuscado = libros.find((x) => x.id === id);
+  if (!libroBuscado) {
+    res.status(404).json({ message: `No se ha podido encontrar el libro con ID ${id} en nuestra base de datos`});
+    return //terminamos proceso si no hay libro
+  }
+
+  const nuevoArrayDeLibros = libros.filter((x) => x.id !== id);
+  libros = nuevoArrayDeLibros;
+
+  res.json({
+    message: `El libro con ID ${id} ha sido eliminado`
+  })
+});
+
+
+
+
 const PORT = 3000
 
 app.listen(PORT, () => {
