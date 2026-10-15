@@ -1,10 +1,11 @@
 import express from "express";
+import { platform } from "node:os";
 
 const app = express();
 app.use(express.json());
 
-app.get("/", (_req, res) => {
-  res.send("Hello from Express + TypeScript");
-});
+const PORT = 3000
 
-app.listen(3000, () => console.log("Listening on http://localhost:3000"));
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
