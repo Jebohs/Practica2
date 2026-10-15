@@ -202,6 +202,22 @@ app.post("libros/:id/prestar", (req, res) => {  //Prestar libro
 });
 
 
+app.post("libros/:id/devolver", (req, res) => {  //Devolver libro
+  const id = Number(req.params.id);
+  const libroBuscado = libros.find((x) => x.id === id);
+  if (!libroBuscado) {
+    res.status(404).json({ message: `No se ha podido encontrar el libro con ID ${id} en nuestra base de datos`});
+    return //terminamos proceso si no hay libro
+  }
+
+  const prestamoActivo = prestamos.find((x) => x.libroId === id && x.fechaDevolucion === null);
+  if (!prestamoActivo) {
+    res.status(400).json({ message: `El libro con ID ${id} no está prestado actualmente` });
+    return
+  }
+  
+});
+
 const PORT = 3000
 
 app.listen(PORT, () => {
