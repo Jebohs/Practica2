@@ -40,7 +40,7 @@ app.post("/libros", (req, res) => {
   }
 
   if (libros.find((x) => x.titulo === req.body.titulo && x.autor === req.body.autor)) {
-    res.status(400).json({ message: "El libro ya existe en la base de datos" });
+    res.status(409).json({ message: "El libro ya existe en la base de datos" });
     return;
   }
 
@@ -128,7 +128,7 @@ app.delete("/libros/:id", (req, res) => { //Elimina un libro por ID
   }
 
   if (prestamos.find((x) => x.libroId === id && x.fechaDevolucion === null)) {
-    res.status(400).json({ message: `El libro con ID ${id} no puede ser eliminado porque está prestado` });
+    res.status(409).json({ message: `El libro con ID ${id} no puede ser eliminado porque está prestado` });
     return //terminamos proceso si libro esta prestado
   }
 
@@ -177,14 +177,14 @@ app.post("libros/:id/prestar", (req, res) => {  //Prestar libro
   }
   
   if (!libroBuscado.disponible) {
-    res.status(400).json({ message: `El libro con ID ${id} no está disponible para préstamo` });
+    res.status(409).json({ message: `El libro con ID ${id} no está disponible para prestamo` });
     return //terminamos proceso si libro no disponible
   }
 
 
   //un usuario no puede tener 2 prestamos
   if (prestamos.find((x) => x.usuario === req.body.usuario && x.fechaDevolucion === null)) {
-    res.status(400).json({ message: `El usuario ${req.body.usuario} ya tiene un libro prestado` });
+    res.status(409).json({ message: `El usuario ${req.body.usuario} ya tiene un libro prestado` });
     return
   }
   //Si se presta se crea el registro nuevo con fecha actual y fechadevolucion null, y disponbile = false
