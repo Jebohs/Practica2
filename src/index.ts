@@ -24,6 +24,7 @@ app.get("/libros/:id", (req, res) => {  //Lista un libro por ID
   
   if (!libroBuscado) {
     res.status(404).json({ message: `No se ha podido encontrar el libro con ID ${id} en nuestra base de datos`});
+    return;
   }
 
   res.json(libroBuscado);
@@ -147,7 +148,7 @@ app.get("/prestamos", (req, res) => {  //Lista todos los prestamos
   res.json(prestamos);
 });
 
-app.get("libros/:id/prestamos", (req, res) => {  //Historial
+app.get("/libros/:id/prestamos", (req, res) => {  //Historial
   const id = Number(req.params.id);
   const libroBuscado = libros.find((x) => x.id === id);
   if (!libroBuscado) {
@@ -159,7 +160,7 @@ app.get("libros/:id/prestamos", (req, res) => {  //Historial
   res.json(prestamosDelLibro);
 });
 
-app.post("libros/:id/prestar", (req, res) => {  //Prestar libro
+app.post("/libros/:id/prestar", (req, res) => {  //Prestar libro
   const id = Number(req.params.id);
   const libroBuscado = libros.find((x) => x.id === id);
   if (!libroBuscado) {
@@ -198,11 +199,15 @@ app.post("libros/:id/prestar", (req, res) => {  //Prestar libro
 
   prestamos.push(nuevoPrestamo);
   libroBuscado.disponible = false; //actualizamos disponibilidad del libro
+
+  res.status(201).json({
+    message: `El libro con ID ${id} ha sido prestado a ${req.body.usuario}`
+  });
   
 });
 
 
-app.post("libros/:id/devolver", (req, res) => {  //Devolver libro
+app.post("/libros/:id/devolver", (req, res) => {  //Devolver libro
   const id = Number(req.params.id);
   const libroBuscado = libros.find((x) => x.id === id);
   if (!libroBuscado) {
@@ -226,7 +231,7 @@ app.get("/estadisticas", (req, res) => {  //Estadisticas
   const totalLibros = libros.length;
   const librosDisponibles = libros.filter((x) => x.disponible).length;
   const librosPrestados = totalLibros - librosDisponibles;
-  
+
   res.json({
     message:`ESTADISTICAS DEL NEGOCIO:
     Total de libros: ${totalLibros}
