@@ -91,7 +91,7 @@ app.patch("/libros/:id", (req, res) => { //Actualiza parcialmente un libro por I
     res.status(400).json({ message: "Esto es un patch update endpoint, necesitas mandra un body" });
     return //terminamos proceso si no hay body
   }
-
+  //todo change so it can work if 1 singlular value is passed
   if(!req.body.titulo || !req.body.autor || !req.body.año ||req.body.disponible === undefined){
     res.status(400).json({
       message: "No hay valores para actualizar"
